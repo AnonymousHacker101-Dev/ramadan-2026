@@ -1,50 +1,53 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const tabs = document.querySelectorAll('nav button');
-  const sections = {
-    today: document.getElementById('times'),
-    calendar: document.createElement('div'), // placeholder
-    about: document.getElementById('about')
-  };
-
   // Tab switching
-  tabs.forEach(tab => {
+  document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       tab.classList.add('active');
-
-      Object.values(sections).forEach(s => s.classList.add('hidden'));
-      const tabName = tab.dataset.tab;
-      if (sections[tabName]) sections[tabName].classList.remove('hidden');
+      document.getElementById(tab.dataset.tab).classList.add('active');
     });
   });
 
-  // Get times button
+  // Fetch times
   document.getElementById('get-times').addEventListener('click', async () => {
-    const city = document.getElementById('city').value;
-    if (!city) return alert('Select a city');
+    const city = document.getElementById('city-select').value;
+    if (!city) return alert('Select a city first');
+
+    const loading = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const timesCard = document.getElementById('times-card');
+
+    loading.classList.remove('hidden');
+    errorEl.classList.add('hidden');
+    timesCard.classList.add('hidden');
 
     try {
-      const today = new Date().toISOString().split('T')[0];
-      const url = `http://api.aladhan.com/v1/timingsByCity?city=\( {city}&country=Pakistan&method=2&date= \){today}`;
-      
+      const date = new Date().toISOString().split('T')[0];
+      const url = `https://api.aladhan.com/v1/timingsByCity?city=\( {encodeURIComponent(city)}&country=Pakistan&method=2&date= \){date}`;
+
       const res = await fetch(url);
       const data = await res.json();
 
-      if (data.code !== 200) throw new Error('API error');
+      if (data.code !== 200) throw new Error('Failed to fetch');
 
-      const timings = data.data.timings;
-      document.getElementById('imsak').textContent = timings.Imsak;
-      document.getElementById('fajr').textContent   = timings.Fajr;
-      document.getElementById('maghrib').textContent = timings.Maghrib;
+      const t = data.data.timings;
+      document.getElementById('imsak').textContent = t.Imsak || '--:--';
+      document.getElementById('fajr').textContent = t.Fajr || '--:--';
+      document.getElementById('maghrib').textContent = t.Maghrib || '--:--';
 
-      document.getElementById('times').classList.remove('hidden');
+      timesCard.classList.remove('hidden');
     } catch (err) {
-      alert('Could not load times: ' + err.message);
+      errorEl.classList.remove('hidden');
+      console.error(err);
+    } finally {
+      loading.classList.add('hidden');
     }
   });
 
-  // Simple live countdown (placeholder - expand later)
+  // Live clock
   setInterval(() => {
-    document.getElementById('countdown').textContent = `Current time: ${new Date().toLocaleTimeString()}`;
+    const now = new Date().toLocaleTimeString('en-US', { hour12: false });
+    document.getElementById('current-time').textContent = now;
   }, 1000);
 });
