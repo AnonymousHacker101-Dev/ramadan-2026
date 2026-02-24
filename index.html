@@ -3,71 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sehri & Iftar Times Pakistan 2026 - Salar King</title>
-  <meta name="description" content="Accurate Sehri, Imsak & Iftar times for Karachi, Lahore, Islamabad & all Pakistan cities. Live countdown & calendar for Ramadan 2026.">
+  <title>Sehri & Iftar Times Pakistan 2026 – Salar King</title>
+  <meta name="description" content="Accurate Sehri, Imsak & Iftar for Karachi, Lahore, Islamabad & all Pakistan cities – Ramadan 2026 countdown.">
   <meta name="author" content="Salar King">
 
-  <!-- Basic SEO / OG tags (add more if needed) -->
-  <meta property="og:title" content="Sehri & Iftar Pakistan 2026 - Salar King">
-  <meta property="og:description" content="Ramadan prayer times with live countdown">
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
-<body data-theme="dark">
+<body>
+  <div class="bg"></div>
 
-  <div class="app-container">
+  <div class="container">
     <header>
-      <h1>رمضان ۲۰۲۶</h1>
-      <p>Pakistan Prayer Times • Salar King</p>
-      <nav>
-        <button data-tab="today" class="active">Today</button>
-        <button data-tab="calendar">Calendar</button>
-        <button data-tab="about">About</button>
+      <div class="logo">
+        <span class="crescent">☪</span>
+        <div class="title-group">
+          <h1 class="arabic">رمضان ۲۰۲۶</h1>
+          <p>Pakistan Prayer Times</p>
+          <small>by Salar King</small>
+        </div>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="today">Today</button>
+        <button class="tab" data-tab="calendar">Calendar</button>
+        <button class="tab" data-tab="about">About</button>
       </nav>
     </header>
 
     <main>
-      <!-- City selector (simplified) -->
-      <section id="city-section">
-        <label for="city">Select City:</label>
-        <select id="city">
-          <option value="Karachi">Karachi</option>
-          <option value="Lahore">Lahore</option>
-          <option value="Islamabad">Islamabad</option>
-          <!-- Add more or load from pk_cities.json in JS -->
-        </select>
-        <button id="get-times">Get Times</button>
-      </section>
-
-      <!-- Times display -->
-      <section id="times" class="hidden">
-        <div class="fasting-card">
+      <!-- Today Tab -->
+      <div class="tab-content active" id="today">
+        <section class="card city-picker">
           <h2>Sehri & Iftar</h2>
-          <div class="times-grid">
-            <div>Imsak: <span id="imsak">--:--</span></div>
-            <div>Sehri Ends (Fajr): <span id="fajr">--:--</span></div>
-            <div>Iftar (Maghrib): <span id="maghrib">--:--</span></div>
+          <p class="tagline">Accurate timings for your city</p>
+
+          <div class="form">
+            <select id="city-select">
+              <option value="">Select City</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Islamabad">Islamabad</option>
+              <option value="Rawalpindi">Rawalpindi</option>
+              <option value="Faisalabad">Faisalabad</option>
+              <option value="Peshawar">Peshawar</option>
+              <option value="Quetta">Quetta</option>
+              <option value="Multan">Multan</option>
+            </select>
+            <button id="get-times">Get Times</button>
           </div>
-        </div>
 
-        <div id="countdown">Countdown: --:--:--</div>
-      </section>
+          <div id="loading" class="status hidden">Loading prayer times...</div>
+          <div id="error" class="status hidden error">Failed to load – check city or try again</div>
+        </section>
 
-      <!-- About -->
-      <section id="about" class="hidden">
-        <h2>About</h2>
-        <p>Built by Salar King for Ramadan 2026. Uses AlAdhan API (Karachi method). Times approximate ±2 min.</p>
-        <p>Join community: <a href="https://whatsapp.com/channel/0029VbBhNn1KgsNr47ZTsg1C" target="_blank">WhatsApp Channel</a></p>
-      </section>
+        <section id="times-card" class="card hidden">
+          <div class="times">
+            <div class="time-box imsak">
+              <span class="emoji">⭐</span>
+              <div class="label">Imsak</div>
+              <div class="value" id="imsak">--:--</div>
+            </div>
+            <div class="time-box sehri">
+              <span class="emoji">🌅</span>
+              <div class="label">Sehri Ends (Fajr)</div>
+              <div class="value" id="fajr">--:--</div>
+            </div>
+            <div class="time-box iftar">
+              <span class="emoji">🌇</span>
+              <div class="label">Iftar (Maghrib)</div>
+              <div class="value" id="maghrib">--:--</div>
+            </div>
+          </div>
+
+          <div class="countdown-box">
+            Current time: <span id="current-time">--:--:--</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- About Tab -->
+      <div class="tab-content hidden" id="about">
+        <section class="card">
+          <h2>About This Website</h2>
+          <p>Built by Salar King for Ramadan 2026. Uses University of Islamic Sciences, Karachi method (default & recommended for Pakistan). Times are approximate ±2 minutes – always confirm with your local mosque.</p>
+          <p>Join community for daily reminders & duas: <a href="https://whatsapp.com/channel/0029VbBhNn1KgsNr47ZTsg1C" target="_blank" class="link">WhatsApp Channel</a></p>
+        </section>
+      </div>
+
+      <!-- Calendar Tab (placeholder – expand later if needed) -->
+      <div class="tab-content hidden" id="calendar">
+        <section class="card">
+          <h2>Ramadan Calendar 2026</h2>
+          <p>Full month schedule coming soon – select a city in Today tab first.</p>
+        </section>
+      </div>
     </main>
 
     <footer>
-      © 2026 Salar King • Data: AlAdhan • Weather: Open-Meteo
+      © 2026 Salar King • Prayer data: <a href="https://aladhan.com" target="_blank">AlAdhan</a>
     </footer>
   </div>
 
